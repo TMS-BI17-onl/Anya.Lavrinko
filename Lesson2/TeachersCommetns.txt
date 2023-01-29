@@ -1,0 +1,14 @@
+Well done!
+
+4
+e) -0.5
+Color is not needed in the SELECT. After adding it to select, you had to add it to GROUP BY and it gave you incorrect result.
+Correct answer:
+SELECT  ProductSubcategoryID,
+		MIN(Weight) AS Min_weight, 
+		MAX(Size) AS Max_size
+FROM Production.Product
+WHERE Color IS NOT NULL
+GROUP BY ProductSubcategoryID
+
+Mark: 10
