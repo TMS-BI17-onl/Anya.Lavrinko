@@ -1,0 +1,27 @@
+1. Выберите из таблицы Водители записи, где стаж водителя не равен 3, 5, 6, 10 и  место прописки 'eee'.
+
+SELECT Stazh, Mesto propiski
+FROM Voditeli
+WHERE Stazh!=3
+AND Stazh!=5
+AND Stazh!=6
+AND Stazh!=10
+AND Mesto propiski ='eee'
+
+2. Найдите № паспортов водителей, которые ни разу не совершали поездки (решите задачу через left join).
+
+SELECT v.Npasporta 
+FROM Voditeli v
+LEFT JOIN Dispetcherskaya d
+ON v.KodVoditelya = d.KodVoditelya
+WHERE d.Putevka<1
+
+3. Написать запрос на выборку авто с годом выпуска = 2015 и 
+его маршруты (таблицы Aвто, Диспеческая, Маршрут). 
+Вывести рег номер авто, время прибытия и отбытия, пункт назначения.
+
+SELECT a.RegNumber, d.VremyaPribytia, d.VremyaOtbutya, m.PunktNazhnachenia
+FROM Avtomobili a JOIN Dispetcherskaya d ON a.KodAvto = d.KodAvto
+                  JOIN Marshuty m ON d.Putevka = m.KodMarshuta
+WHERE a.GodVypuska = 2015
+
