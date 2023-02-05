@@ -1,0 +1,145 @@
+1.1 
+SELECT *
+FROM Production.UnitMeasure
+WHERE UnitMeasureCode LIKE 'T%' - Нет результатов 
+
+1.2 
+SELECT COUNT(UnitMeasureCode)
+FROM Production.UnitMeasure - 38 (или через order by, кол-во строк)
+
+1.3 
+INSERT INTO [Production].[UnitMeasure]
+VALUES ('TT1', 'Test 1', '2020-09-09'),
+('TT2', 'Test 2', getdate())
+
+1.4 
+SELECT *
+FROM Production.UnitMeasure
+WHERE UnitMeasureCode LIKE 'T%' - 2 результата, наши новые строки
+
+
+1.5
+SELECT UnitMeasureCode,Name,ModifiedDate
+INTO [Production].[UnitMeasureTest]
+FROM Production.UnitMeasure
+WHERE UnitMeasureCode LIKE 'T%'
+
+1.6
+INSERT INTO [Production].[UnitMeasureTest]
+SELECT *
+FROM Production.UnitMeasure
+WHERE UnitMeasureCode = 'CAN'
+
+1.7
+UPDATE Production.UnitMeasureTest
+SET UnitMeasureCode = 'TTT'
+
+1.8
+DELETE 
+FROM Production.UnitMeasureTest
+
+1.9
+SELECT *
+FROM Sales.SalesOrderDetail 
+WHERE SalesOrderID IN (43659,43664)
+
+SELECT SalesOrderID, LineTotal
+, MIN(LineTotal) OVER (PARTITION BY SalesOrderID) AS "Min"
+, MAX(LineTotal) OVER (PARTITION BY SalesOrderID) AS "Max"
+, AVG(LineTotal) OVER (PARTITION BY SalesOrderID) AS "Avg"
+FROM Sales.SalesOrderDetail
+WHERE SalesOrderID IN (43659,43664)
+
+1.10
+SELECT FirstName, LastName, SalesYTD,
+ CONCAT(UPPER (LEFT(LastName,3)), 'Login', TerritoryGroup) AS Login
+,DENSE_RANK() OVER (ORDER BY SalesYTD DESC) AS "RankYTD"
+FROM Sales.vSalesPerson
+
+Кто возглавляет рейтинг? Linda Mitchell
+А кто возглавлял рейтинг в прошлом году (SalesLastYear). - Ranjit
+SELECT FirstName, LastName, SalesLastYear,
+ CONCAT(UPPER (LEFT(LastName,3)), 'Login', TerritoryGroup) AS Login
+,DENSE_RANK() OVER (ORDER BY SalesLastYear DESC) AS "RankYTD"
+FROM Sales.vSalesPerson
+
+
+1.12
+Давайте еще раз остановимся и отточим понимание функции count. 
+Найдите значения count(1), count(name), count(id), count(*) для следующей таблицы:
+Id(PK)	Name		DepName
+1	null		A
+2	null		null
+3	A		C
+4	B		C
+
+Count (1) - кол-во сторк в таблице, т е 4
+count(*) - тоже самое, 4
+count(name) - 2
+count(id) - 4
+
+USE AdventureWorks2017;
+CREATE TABLE Patients
+( Id INT IDENTITY (1,1),
+  FirstName NVARCHAR(30) NOT NULL,
+  LastName NVARCHAR(50) NOT NULL,
+  SSN  uniqueidentifier NOT NULL DEFAULT newid(),
+  Email AS CONCAT(UPPER(LEFT(FirstName,1)),LOWER(LEFT(Lastname,3)),'@mail.com'),
+  Temp DECIMAL(3,1) NOT NULL,
+  CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+SELECT* FROM Patients
+
+INSERT Patients
+(FirstName, LastName,Temp,CreatedDate)  
+VALUES  
+ ('Anna', 'Orlova', 36.67, '2023-02-04'), ('Ivan', 'Ivanov', 38, GETDATE()), 
+ ('Alex', 'Smith', 39.5, GETDATE()), ('Olga', 'Sidorova', 35.9, GETDATE())
+ SELECT * FROM Patients
+
+ALTER TABLE Patients ADD TempType  AS
+ CASE 
+    WHEN Temp<37 THEN '< 37°C'
+    ELSE '> 37°C'
+END
+SELECT *FROM Patients
+
+CREATE VIEW Patients_F
+AS 
+  SELECT FirstName, LastName,Temp*9/5 + 32 AS TempF,CreatedDate 
+  FROM Patients
+GO
+SELECT * FROM Patients_F
+
+При создании вью сразу в селект вывела только столбец с температурой, когда попыталась дроп - пишет, 
+что нет разрешения, поэтому создала новый вью Patients_F и вывела туда еще и столбцы с данными 
+
+CREATE FUNCTION dbo.udfTemp_F(
+@temp DEC(3,1)
+ )
+ RETURNS DEC(3,1)
+ AS
+ BEGIN 
+    RETURN @temp*9/5+32;
+END
+SELECT dbo.udfTemp_F(35.1) temp_f (тут долго не могла разобраться с названием функции, ставила 
+patients.название функции,а без дбо не работало)
+
+SELECT DATEADD(yy, DATEDIFF(yy, 0, '2023-01-01'), 0) + 
+    CASE 
+        WHEN DATEPART(dw, '2023-01-01') = 7 THEN 2 
+        WHEN DATEPART(dw, '2023-01-01') = 1 THEN 1 
+        ELSE 7 - DATEPART(dw, '2023-01-01') + 2 
+    END
+
+
+DECLARE @DateP INT
+SET @DateP = DATEPART(dw, '2022-01-01') 
+
+
+SELECT DATEADD(yy, DATEDIFF(yy, 0, '2022-01-01'), 0) + 
+    CASE 
+        WHEN @DateP = 7 THEN 2 
+        WHEN @DateP = 1 THEN 1 
+        ELSE 7 - @DateP + 2 
+    END
