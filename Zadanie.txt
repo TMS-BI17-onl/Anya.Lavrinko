@@ -25,3 +25,5 @@ FROM Avtomobili a JOIN Dispetcherskaya d ON a.KodAvto = d.KodAvto
                   JOIN Marshuty m ON d.Putevka = m.KodMarshuta
 WHERE a.GodVypuska = 2015
 
+
+Mark: 9
