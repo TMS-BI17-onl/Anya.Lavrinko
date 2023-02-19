@@ -8,13 +8,13 @@ DROP TABLE IF EXISTS DimClients CREATE TABLE
 		FirstName   NVARCHAR(50) NOT NULL,
 		LastName    NVARCHAR(50) NOT NULL,
 		TypeClient  NVARCHAR(15),
-		Passport    UNIQUEIDENTIFIER NOT NULL,--didn't create as a separate constraint, is it correct?
+		Passport    uniqueidentifier NOT NULL  
+                    CONSTRAINT DF_Passport_DimClients DEFAULT NEWID(),		
 		PhoneNumber NVARCHAR(20),
 		Address     NVARCHAR(150),
 		BirthDate   DATE,
 		CONSTRAINT PK_ClientId_DimClients PRIMARY KEY (ClientId),
-	    CONSTRAINT UQ_Passport_DimClients UNIQUE (Passport)
-		--I see these 2 as Keys (Pk,UQ) in the structure , but there is nothong in Constraints, is it OK? 
+		CONSTRAINT UQ_Passport_DimClients UNIQUE (Passport)
        );
 DROP TABLE IF EXISTS DimManagers CREATE TABLE
 	DimManagers(
@@ -22,7 +22,8 @@ DROP TABLE IF EXISTS DimManagers CREATE TABLE
 		FirstName   NVARCHAR(50) NOT NULL,
 		LastName    NVARCHAR(50) NOT NULL,
 		Position    NVARCHAR(50),
-		Passport    UNIQUEIDENTIFIER NOT NULL,
+		Passport    uniqueidentifier NOT NULL  
+                    CONSTRAINT DF_Passport_DimManagers DEFAULT NEWID(), 
 		PhoneNumber NVARCHAR(20),
 		Email       NVARCHAR(25),
 		Territory   NVARCHAR(50),
