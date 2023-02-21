@@ -1,0 +1,8 @@
+Well done!
+
+-1
+There are data about fathers full name. That's the reason why we have father_id.
+Your join is meaningless, you'll just have same column twice. 
+JOIN should look like: People p JOIN People f ON p.id_father=f.id
+
+Mark: 9
