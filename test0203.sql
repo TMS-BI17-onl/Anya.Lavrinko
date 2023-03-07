@@ -68,3 +68,6 @@ VALUES (5,'HP',4)--no need to indicate 5 and id, if id =new id, it's atomaticall
 UPDATE user
 SET age = age/3
 WHERE name = 'Андрей'
+
+
+Test mark: 9
