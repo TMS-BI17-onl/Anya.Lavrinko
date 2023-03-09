@@ -1,0 +1,6 @@
+Well done!
+
+-3
+Did you try to alter your desctination table in the db to change column tyes? SSIS also has operation called "changing type" ot smth similar.
+
+Mark: 7
