@@ -1,0 +1,6 @@
+Well done!
+
+-2
+You just gave each day a mark. But we still need to summarize those numbers to calculate sum for each day.
+
+Mark: 8
