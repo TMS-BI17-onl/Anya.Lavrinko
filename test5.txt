@@ -1,0 +1,48 @@
+1. Найти ProductSubcategoryID из Production.Product, где мин вес такого ProductSubcategoryID больше 150. 
+
+SELECT ProductSubcategoryID, MIN(Weight)
+FROM Production.Product
+GROUP BY ProductSubcategoryID
+HAVING MIN(Weight)>150
+
+2. Найти самый дорогой продукт (поле StandardCost) из Production.Product. (4 способа)
+
+1) SELECT ProductID, StandardCost
+FROM Production.Product
+WHERE StandardCost=(SELECT MAX (StandardCost)
+                      FROM Production.Product
+
+
+2) SELECT ProductID, StandardCost
+FROM (
+SELECT ProductID, StandardCost, MAX(StandardCost) OVER () as max_cost
+FROM Production.Product
+) t
+WHERE StandardCost=max_cost
+
+
+3) SELECT ProductID, StandardCost
+FROM (
+SELECT ProductID, StandardCost, RANK() OVER (ORDER BY StandardCost DESC) as rnk
+FROM Production.Product
+) t
+WHERE rnk=1
+
+4) SELECT TO 1 WITH TIES ProductID, StandardCost
+FROM Production.Product
+ORDER BY StandardCost DESC
+
+3. Найти клиентов, которые за последний год не совершили ни одной аренды. (схема GROUP1)
+
+SELECT c.CustomerID, c.Name
+FROM DimCustomers c 
+LEFT JOIN (SELECT CustomerID FROM FctOrders WHERE RentDate>=DATEADD(YEAR, -1, GETDATE())) o
+ON c.CustomerID=o.CustomerID
+WHERE o.CustomerID IS NULL
+
+4. Найти для каждого сотрудника кол-во ремонтов за последние 5 лет.  (схема GROUP1)
+
+SELECT FullName, COALESCE(COUNT(1), 0) as cnt
+FROM DimEmployees e LEFT JOIN FctMaintenance m ON E.EmployeeNumber=M.EmployeeNumber
+WHERE StartDate>DATEADD(YEAR, -5, GETDATE()) 
+GROUP BY FullName
