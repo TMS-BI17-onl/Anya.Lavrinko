@@ -46,3 +46,5 @@ SELECT FullName, COALESCE(COUNT(1), 0) as cnt
 FROM DimEmployees e LEFT JOIN FctMaintenance m ON E.EmployeeNumber=M.EmployeeNumber
 WHERE StartDate>DATEADD(YEAR, -5, GETDATE()) 
 GROUP BY FullName
+
+Mark: 8
